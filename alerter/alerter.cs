@@ -7,7 +7,7 @@ namespace TemperatureSpace {
         static int tempThresholdInC = 280;
 
         static void alertInCelcius(float farenheit) {
-            float celcius = cToF(farenheit);
+            float celcius = FtoC(farenheit);
 
             int returnCode = NetworkStub.SendAlert(celcius, tempThresholdInC);
             if (returnCode == NetworkStub.codeNotOk)
@@ -20,13 +20,20 @@ namespace TemperatureSpace {
             }
         }
 
-        private static float cToF(float f) { return (f - 32) * 5 / 9; }
+        private static float FtoC(float f) {
+            return (f - 32) * 5 / 9;
+        }
 
         static void Main(string[] args) {
+            // Check if conversion is correct
+            // change the test, if need be
+            Debug.Assert(FtoC(33.8f) == 1f);
+
             // Change the sensor stub if need be to generate temperature within and out of range
             alertInCelcius(SensorStub.GetTemperature());
             Debug.Assert(alertFailureCount == 0);
 
+            // Change the network stub if need be to test failed alert reporting
             alertInCelcius(SensorStub.randomTemperature(tempThresholdInC+10, tempThresholdInC));
             Debug.Assert(alertFailureCount > 0);
 
