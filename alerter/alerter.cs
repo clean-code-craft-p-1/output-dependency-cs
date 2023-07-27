@@ -1,41 +1,35 @@
 ﻿using System;
+using System.Diagnostics;
 
-namespace AlerterSpace
-{
-    class Alerter
-    {
+namespace TemperatureSpace {
+    class Alerter {
         static int alertFailureCount = 0;
-        static int codeOk = 200;
-        static int codeNotOk = 500;
-        static int tempThresholdInC = 200;
-        static int networkAlertStub(float celcius)
-        {
-            Console.WriteLine("ALERT: Temperature is {0} celcius, Threshold: {1} celcius",
-                celcius, tempThresholdInC);
-            // Return code 200 when successful in alerting breach on network
-            // Return code 500 for if failed in alerting breach on network
-            // stub always succeeds and returns 200
-            return codeOk;
-        }
-        static void alertInCelcius(float farenheit)
-        {
-            float celcius = (farenheit - 32) * 5 / 9;
-            int returnCode = networkAlertStub(celcius);
-            if (returnCode == codeNotOk)
+        static int tempThresholdInC = 280;
+
+        static void alertInCelcius(float farenheit) {
+            float celcius = cToF(farenheit);
+
+            int returnCode = NetworkStub.SendAlert(celcius, tempThresholdInC);
+            if (returnCode == NetworkStub.codeNotOk)
             {
                 // non-ok response is not an error! Issues happen in life!
-                // let us keep a count of failures to report
+                // let us keep a count of the number of times the alert was not communicated
                 // However, this code doesn't count failures!
                 // Add a test below to catch this bug. Alter the stub above, if needed.
-                alertFailureCount += 0;
+                alertFailureCount+=0;
             }
         }
-        static void Main(string[] args)
-        {
-            alertInCelcius(100.8f);
-            alertInCelcius(392f);
-            alertInCelcius(393.5f);
-            alertInCelcius(450.6f);
+
+        private static float cToF(float f) { return (f - 32) * 5 / 9; }
+
+        static void Main(string[] args) {
+            // Change the sensor stub if need be to generate temperature within and out of range
+            alertInCelcius(SensorStub.GetTemperature());
+            Debug.Assert(alertFailureCount == 0);
+
+            alertInCelcius(SensorStub.randomTemperature(tempThresholdInC+10, tempThresholdInC));
+            Debug.Assert(alertFailureCount > 0);
+
             Console.WriteLine("{0} alerts failed.", alertFailureCount);
             Console.WriteLine("All is well (maybe!)\n");
         }
