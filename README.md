@@ -12,7 +12,7 @@ This exercise has a set of buggy implementations. The implementations also have 
 
 Your task is to _strengthen the tests_ and make them all fail. You **can refactor** the code to separate the concerns and make it testable. **Do not fix the bug. Do not pass the tests yet**
 
-In this repository, the workflows are designed to make the Action fail when any of the tests pass.
+In this repository, all the tests pass. However, it's a 'false pass'. Your goal is to make them fail and expose the bugs.
 
 ## Hints
 

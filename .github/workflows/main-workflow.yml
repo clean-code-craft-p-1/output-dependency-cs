@@ -10,21 +10,20 @@ jobs:
     runs-on: ubuntu-latest
     name: build
     steps:
-      - uses: actions/checkout@v2
-        # Install the .NET Core workload
+      - uses: actions/checkout@v4
       - name: Install .NET Core
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}      
       - name: tshirts
         run: |
           cd tshirts
-          bash ../.github/workflows/expectfail.sh dotnet run
+          dotnet run
       - name: misaligned
         run: |
           cd misaligned
-          bash ../.github/workflows/expectfail.sh dotnet run
+          dotnet run
       - name: weather-report
         run: |
           cd weatherreport
-          bash ../.github/workflows/expectfail.sh dotnet run
+          dotnet run
